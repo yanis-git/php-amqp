@@ -38,7 +38,7 @@ jobs:
           context: ./${{ matrix.php_version }}
           file: ./${{ matrix.php_version }}/Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ matrix.php_version }}
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Generate artifact attestation

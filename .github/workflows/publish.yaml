@@ -39,7 +39,7 @@ jobs:
           context: ./${{ matrix.php_version }}
           file: ./${{ matrix.php_version }}/Dockerfile
           push: true
-          tags: ${{ matrix.php_version }}
+          tags: ${{ env.REGISTRY }}:${{ matrix.php_version }}
 
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v1

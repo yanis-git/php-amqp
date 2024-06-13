@@ -38,6 +38,7 @@ jobs:
         id: push
         uses: docker/build-push-action@v5.4.0
         with:
+          platforms: linux/amd64,linux/arm64
           context: ./${{ matrix.php_version }}
           file: ./${{ matrix.php_version }}/Dockerfile
           push: true

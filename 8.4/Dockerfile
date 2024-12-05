@@ -2,8 +2,7 @@ FROM php:8.4-fpm
 
 # Install dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl git zip unzip imagemagick webp poppler-utils \
-    libmagickwand-dev libmagickcore-dev \
+    curl git zip unzip imagemagick webp poppler-utils  \
     libwebp-dev libavif-dev libicu-dev libpq-dev libzip-dev libpng-dev \
     libfreetype6-dev libjpeg62-turbo-dev librabbitmq-dev libssh-dev libmagickwand-dev && \
     apt-get clean && apt-get autoclean && \

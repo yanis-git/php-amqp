@@ -1,20 +1,22 @@
-FROM php:8.3-fpm
+FROM composer:2.8.12@sha256:5248900ab8b5f7f880c2d62180e40960cd87f60149ec9a1abfd62ac72a02577c AS composer
+FROM php:8.3-fpm@sha256:df9666c3ff99b15b8ac54b0d69d912a44c351d8f39b8b0c8b9301241f5a5d4f8
 
-# Install dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl git zip unzip imagemagick webp poppler-utils  \
-    libwebp-dev libavif-dev libicu-dev libpq-dev libzip-dev libpng-dev \
-    libfreetype6-dev libjpeg62-turbo-dev librabbitmq-dev libssh-dev libmagickwand-dev && \
-    apt-get clean && apt-get autoclean && \
-    rm -rf /var/lib/apt/lists/*
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        curl git zip unzip imagemagick webp poppler-utils \
+        libwebp-dev libavif-dev libicu-dev libpq-dev libzip-dev libpng-dev \
+        libfreetype6-dev libjpeg62-turbo-dev librabbitmq-dev libssh-dev libmagickwand-dev; \
+    docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp --with-avif; \
+    pecl install amqp imagick; \
+    docker-php-ext-enable amqp imagick; \
+    docker-php-ext-install -j"$(nproc)" bcmath pdo_mysql gd zip exif intl; \
+    rm -rf /tmp/pear /var/lib/apt/lists/*
 
-RUN pecl install amqp && \
-    pecl install imagick && \
-    docker-php-ext-enable amqp imagick && \
-    docker-php-ext-install -j$(nproc) bcmath pdo_mysql gd zip exif intl
+COPY policy.xml /tmp/policy.xml
+RUN set -eux; \
+    imageMagickConfigDir="$(convert -list configure | awk '$1 == "CONFIGURE_PATH" { print $2; exit }' | cut -d: -f1)"; \
+    cp /tmp/policy.xml "$imageMagickConfigDir/policy.xml"; \
+    rm /tmp/policy.xml
 
-COPY policy.xml /etc/ImageMagick-6/policy.xml
-
-# Install composer with hirak/prestissimo
-RUN curl -sS https://getcomposer.org/composer-stable.phar -o /usr/local/bin/composer && \
-    chmod +x /usr/local/bin/composer
+COPY --from=composer /usr/bin/composer /usr/local/bin/composer

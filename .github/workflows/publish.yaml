@@ -88,4 +88,5 @@ jobs:
           context: ./${{ matrix.php_version }}
           file: ./${{ matrix.php_version }}/Dockerfile
           push: true
+          provenance: false
           tags: yanisdocaxess/php-amqp:${{ matrix.php_version }}

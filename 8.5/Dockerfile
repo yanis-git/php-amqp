@@ -11,7 +11,8 @@ RUN set -eux; \
     pecl install amqp imagick; \
     docker-php-ext-enable amqp imagick; \
     docker-php-ext-install -j"$(nproc)" bcmath pdo_mysql gd zip exif intl; \
-    rm -rf /tmp/pear /var/lib/apt/lists/*
+    apt-get clean; \
+    rm -rf /tmp/pear /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 COPY policy.xml /tmp/policy.xml
 RUN set -eux; \

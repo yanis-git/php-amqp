@@ -1,5 +1,5 @@
 FROM composer:2.10.2@sha256:4d71c3c2109c61d5415544264b59ad4087e4c5b7244481723664138fd36d5040 AS composer
-FROM php:8.3-fpm@sha256:df9666c3ff99b15b8ac54b0d69d912a44c351d8f39b8b0c8b9301241f5a5d4f8
+FROM php:8.3-fpm@sha256:5ad27201cf5cdf1704e147218e64fa0db2155ecda26edbe2b3eeb7b90cbf9328
 
 RUN set -eux; \
     apt-get update; \

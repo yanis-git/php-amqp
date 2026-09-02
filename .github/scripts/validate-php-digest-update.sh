@@ -27,6 +27,7 @@ for file in "${changed_files[@]}"; do
   fi
 
   php_version=${file%%/*}
+  php_version_pattern=${php_version//./\\.}
   work_dir=$(mktemp -d)
   base_file="$work_dir/base"
   head_file="$work_dir/head"
@@ -37,7 +38,7 @@ for file in "${changed_files[@]}"; do
   git show "$base_sha:$file" > "$base_file"
   git show "$head_sha:$file" > "$head_file"
 
-  php_from_pattern="^FROM php:${php_version}-fpm@sha256:[0-9a-f]{64}$"
+  php_from_pattern="^FROM php:${php_version_pattern}-fpm@sha256:[0-9a-f]{64}$"
   if [[ $(grep -Ec "$php_from_pattern" "$base_file") -ne 1 ]] ||
      [[ $(grep -Ec "$php_from_pattern" "$head_file") -ne 1 ]]; then
     echo "Refusing a PHP tag change or malformed digest in $file." >&2
@@ -51,9 +52,9 @@ for file in "${changed_files[@]}"; do
     exit 1
   fi
 
-  sed -E "s|^FROM php:${php_version}-fpm@sha256:[0-9a-f]{64}$|FROM php:${php_version}-fpm@sha256:<digest>|" \
+  sed -E "s|^FROM php:${php_version_pattern}-fpm@sha256:[0-9a-f]{64}$|FROM php:${php_version}-fpm@sha256:<digest>|" \
     "$base_file" > "$normalized_base"
-  sed -E "s|^FROM php:${php_version}-fpm@sha256:[0-9a-f]{64}$|FROM php:${php_version}-fpm@sha256:<digest>|" \
+  sed -E "s|^FROM php:${php_version_pattern}-fpm@sha256:[0-9a-f]{64}$|FROM php:${php_version}-fpm@sha256:<digest>|" \
     "$head_file" > "$normalized_head"
 
   if ! cmp -s "$normalized_base" "$normalized_head"; then

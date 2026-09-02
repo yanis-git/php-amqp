@@ -9,8 +9,7 @@ updates:
     schedule:
       interval: weekly
       day: monday
-      time: "05:00"
-      timezone: Indian/Mauritius
+      time: "01:00"
     groups:
       docker-images:
         group-by: dependency-name
@@ -28,8 +27,7 @@ updates:
     schedule:
       interval: weekly
       day: monday
-      time: "05:00"
-      timezone: Indian/Mauritius
+      time: "01:00"
     groups:
       weekly-maintenance:
         update-types:

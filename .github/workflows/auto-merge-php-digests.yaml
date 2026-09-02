@@ -68,7 +68,8 @@ jobs:
           ' <<<"$files_json"
 
           git fetch --no-tags origin "$base_sha" "$head_sha"
-          .github/scripts/validate-php-digest-update.sh "$base_sha" "$head_sha"
+          merge_base=$(git merge-base "$base_sha" "$head_sha")
+          .github/scripts/validate-php-digest-update.sh "$merge_base" "$head_sha"
 
           merge_json=$(gh api --method PUT "repos/$REPOSITORY/pulls/$PR_NUMBER/merge" \
             -f merge_method=squash \

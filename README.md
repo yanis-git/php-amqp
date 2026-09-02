@@ -68,7 +68,7 @@ requests only build and smoke-test the images; they do not authenticate to
 Docker Hub or push images.
 
 The official PHP base images, Composer, and GitHub Actions are pinned to immutable
-references. Dependabot checks them weekly using the `Indian/Mauritius` timezone:
+references. Dependabot checks them weekly:
 
 - PHP `8.2`, `8.3`, `8.4`, and `8.5` remain separate product lines. A pull
   request that changes only the immutable digest of one or more matching PHP

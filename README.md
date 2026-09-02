@@ -60,12 +60,24 @@ docker buildx build --platform linux/amd64,linux/arm64 \
 ## Releases and maintenance
 
 Pushing to the repository's `main` branch triggers one multi-platform Docker
-Hub publication per supported PHP tag. Pull requests only build and smoke-test
-the images; they do not authenticate to Docker Hub or push images.
+Hub publication per supported PHP tag. The same four images are rebuilt and
+published every Monday, with the build cache disabled and base images pulled
+again so that APT and PECL packages are refreshed. A publication can also be
+started manually with the `Validate and publish Docker images` workflow. Pull
+requests only build and smoke-test the images; they do not authenticate to
+Docker Hub or push images.
 
 The official PHP base images, Composer, and GitHub Actions are pinned to immutable
-references. Dependabot is configured to propose updates for those references;
-base-image fixes therefore arrive through reviewed dependency updates rather than
-silently changing a rebuild. Review and publish updates promptly when security
-fixes are needed—these images do not by themselves guarantee that all downstream
-dependencies or deployed containers are current or vulnerability-free.
+references. Dependabot checks them weekly:
+
+- PHP `8.2`, `8.3`, `8.4`, and `8.5` remain separate product lines. A pull
+  request that changes only the immutable digest of one or more matching PHP
+  base-image tags is built, smoke-tested, and squash-merged automatically.
+- Composer and GitHub Actions receive patch and minor update pull requests.
+  These updates always require manual review and merging; major updates are
+  ignored.
+
+After an automatic PHP digest merge, publication is dispatched explicitly.
+Review and publish other updates promptly when security fixes are needed—these
+images do not by themselves guarantee that all downstream dependencies or
+deployed containers are current or vulnerability-free.

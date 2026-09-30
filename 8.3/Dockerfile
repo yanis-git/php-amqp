@@ -1,4 +1,4 @@
-FROM composer:2.10.3@sha256:d8f6343d3fae98107426bc49163ccad46ef85aabd4a27d80a74401fab4aba332 AS composer
+FROM composer:2.10.3@sha256:9715c7f69044da2a212a5fbde29ee7da24e364d426560ae6367b060236f847d7 AS composer
 FROM php:8.3-fpm@sha256:5ad27201cf5cdf1704e147218e64fa0db2155ecda26edbe2b3eeb7b90cbf9328
 
 RUN set -eux; \

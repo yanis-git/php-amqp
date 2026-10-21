@@ -20,6 +20,10 @@ docker run --rm yanisdocaxess/php-amqp:8.4 php -v
 PHP extensions: `amqp`, `imagick`, `bcmath`, `exif`, `gd`, `intl`, `pdo_mysql`,
 and `zip`.
 
+`amqp` and `imagick` are compiled from version-pinned GitHub source archives
+using `docker-php-ext-install`, without contacting PECL. Their versions are
+controlled by the `AMQP_VERSION` and `IMAGICK_VERSION` build arguments.
+
 The images also include Composer and the following OS tools: `curl`, `git`,
 `zip`, `unzip`, ImageMagick, `webp`, and Poppler utilities.
 
@@ -62,7 +66,7 @@ docker buildx build --platform linux/amd64,linux/arm64 \
 Pushing to the repository's `main` branch triggers one multi-platform Docker
 Hub publication per supported PHP tag. The same four images are rebuilt and
 published every Monday, with the build cache disabled and base images pulled
-again so that APT and PECL packages are refreshed. A publication can also be
+again so that APT packages are refreshed. A publication can also be
 started manually with the `Validate and publish Docker images` workflow. Pull
 requests only build and smoke-test the images; they do not authenticate to
 Docker Hub or push images.

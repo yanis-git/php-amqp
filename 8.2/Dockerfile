@@ -1,4 +1,4 @@
-FROM composer:2.10.3@sha256:af98f42dfff7c68ba8d53c2164fd9fde1087b7d449514baa38c418b1f6bc4bac AS composer
+FROM composer:2.10.3@sha256:b6dcd72ca98fa19d0e5b8476de179859704891fad06dd9e0b96833d4c430a5fc AS composer
 # PHP 8.2.35 (linux/amd64), 8.2.34 (linux/arm64)
 FROM php:8.2-fpm@sha256:b72a79e3d39b0977c44723eed5c06b4c4eea5db1b2d98dfd24fdda9cb21d0ef1
 

@@ -1,15 +1,18 @@
 FROM composer:2.11.1@sha256:8de2184c6de224f4689e8f80ed5f5edaf0030b6b8b7839a22a2bcb6722ac87d0 AS composer
-# PHP 8.2.35 (linux/amd64), 8.2.34 (linux/arm64)
-FROM php:8.2-fpm@sha256:e9d7f610a9f41e9b9bae8b0e7c8869942102a72093743c0a01c54f9ea4a01748
+# PHP 8.6.0
+FROM php:8.6-fpm@sha256:cf1219d285d49cc07f37b94babecd02db21947dbd14c1d60d13860e051209790
 
 ARG AMQP_VERSION=2.2.0
 ARG IMAGICK_VERSION=3.8.1
 
+# PHP 8.6 compatibility backports (keep tagged extension sources):
+# https://github.com/php-amqp/php-amqp/pull/643 (INI APIs and offsetof)
+# https://github.com/Imagick/imagick/commit/b580a705e2c879924bfaee2e1ed3a93c9cb3fcfb
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
         curl git zip unzip imagemagick webp poppler-utils \
-        libwebp-dev libavif-dev libicu-dev libpq-dev libzip-dev libpng-dev \
+        libwebp-dev libavif-dev libonig-dev libicu-dev libpq-dev libzip-dev libpng-dev \
         libfreetype6-dev libjpeg62-turbo-dev librabbitmq-dev libssh-dev libmagickwand-dev; \
     docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp --with-avif; \
     docker-php-source extract; \
@@ -19,7 +22,13 @@ RUN set -eux; \
     curl -fsSL --retry 3 "https://github.com/Imagick/imagick/archive/refs/tags/${IMAGICK_VERSION}.tar.gz" -o /tmp/imagick.tar.gz; \
     tar xzf /tmp/imagick.tar.gz -C /usr/src/php/ext/imagick --strip-components=1; \
     sed -i "s/@PACKAGE_VERSION@/${IMAGICK_VERSION}/g" /usr/src/php/ext/imagick/php_imagick.h; \
-    docker-php-ext-install -j"$(nproc)" amqp imagick bcmath pdo_mysql gd zip exif intl; \
+    sed -i -e 's/XtOffsetOf(/offsetof(/g' \
+        -e 's/\bINI_INT(/zend_ini_long_literal(/g' \
+        -e 's/\bINI_STR(/zend_ini_string_literal(/g' \
+        -e 's/\bINI_FLT(/zend_ini_double_literal(/g' \
+        /usr/src/php/ext/amqp/*.c /usr/src/php/ext/amqp/*.h; \
+    sed -i 's/XtOffsetOf(/offsetof(/g' /usr/src/php/ext/imagick/*.c /usr/src/php/ext/imagick/*.h; \
+    docker-php-ext-install -j"$(nproc)" amqp imagick bcmath pdo_mysql gd zip exif intl mbstring; \
     docker-php-source delete; \
     rm -f /tmp/amqp.tar.gz /tmp/imagick.tar.gz; \
     apt-get clean; \

@@ -2,10 +2,10 @@ version: 2
 updates:
   - package-ecosystem: docker
     directories:
-      - "/8.2"
       - "/8.3"
       - "/8.4"
       - "/8.5"
+      - "/8.6"
     schedule:
       interval: weekly
       day: monday

@@ -7,7 +7,7 @@ support and ImageMagick processing.
 
 ## Tags and platforms
 
-The published PHP tags are `8.2`, `8.3`, `8.4`, and `8.5`. Each tag is built
+The published PHP tags are `8.3`, `8.4`, `8.5`, and `8.6`. Each tag is built
 for `linux/amd64` and `linux/arm64`.
 
 ```sh
@@ -17,12 +17,21 @@ docker run --rm yanisdocaxess/php-amqp:8.4 php -v
 
 ## Included software
 
-PHP extensions: `amqp`, `imagick`, `bcmath`, `exif`, `gd`, `intl`, `pdo_mysql`,
+PHP extensions: `amqp`, `imagick`, `bcmath`, `exif`, `gd`, `intl`, `mbstring`, `pdo_mysql`,
 and `zip`.
+
+PHP 8.6 explicitly builds `mbstring` with Oniguruma to preserve the extension
+available in the older official PHP base images.
 
 `amqp` and `imagick` are compiled from version-pinned GitHub source archives
 using `docker-php-ext-install`, without contacting PECL. Their versions are
 controlled by the `AMQP_VERSION` and `IMAGICK_VERSION` build arguments.
+
+The PHP 8.6 variant backports compatibility changes to these tagged sources:
+[AMQP's PHP 8.6 fix](https://github.com/php-amqp/php-amqp/pull/643) (still an
+open pull request) and [Imagick's `offsetof` fix](https://github.com/Imagick/imagick/commit/b580a705e2c879924bfaee2e1ed3a93c9cb3fcfb).
+These replace APIs removed in PHP 8.6; the older PHP variants keep their sources
+unchanged.
 
 The images also include Composer and the following OS tools: `curl`, `git`,
 `zip`, `unzip`, ImageMagick, `webp`, and Poppler utilities.
@@ -74,7 +83,7 @@ Docker Hub or push images.
 The official PHP base images, Composer, and GitHub Actions are pinned to immutable
 references. Dependabot checks them weekly:
 
-- PHP `8.2`, `8.3`, `8.4`, and `8.5` remain separate product lines. A pull
+- PHP `8.3`, `8.4`, `8.5`, and `8.6` remain separate product lines. A pull
   request that changes only the immutable digest of one or more matching PHP
   base-image tags is built, smoke-tested, and squash-merged automatically.
 - Composer and GitHub Actions receive patch and minor update pull requests.

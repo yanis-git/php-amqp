@@ -21,7 +21,7 @@ if [[ ${#changed_files[@]} -eq 0 ]]; then
 fi
 
 for file in "${changed_files[@]}"; do
-  if [[ ! $file =~ ^8\.[2-5]/Dockerfile$ ]]; then
+  if [[ ! $file =~ ^8\.[3-6]/Dockerfile$ ]]; then
     echo "Refusing unexpected changed file: $file" >&2
     exit 1
   fi

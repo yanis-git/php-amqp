@@ -51,7 +51,7 @@ jobs:
             "repos/$REPOSITORY/actions/runs/$RUN_ID/jobs?filter=latest&per_page=100")
           jq -e '
             [.[].jobs[]
-              | select(.name | test("^Validate PHP (8\\.2|8\\.3|8\\.4|8\\.5) image$"))
+              | select(.name | test("^Validate PHP (8\\.3|8\\.4|8\\.5|8\\.6) image$"))
               | {name, conclusion}
             ] as $jobs
             | ($jobs | length) == 4
@@ -64,7 +64,7 @@ jobs:
           jq -e '
             [.[].[] | .filename] as $files
             | ($files | length) > 0
-              and ([$files[] | select(test("^8\\.[2-5]/Dockerfile$") | not)] | length) == 0
+              and ([$files[] | select(test("^8\\.[3-6]/Dockerfile$") | not)] | length) == 0
           ' <<<"$files_json"
 
           git fetch --no-tags origin "$base_sha" "$head_sha"
